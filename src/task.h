@@ -58,12 +58,14 @@ public:
 
     void get_all_task(){
         if (id_task.empty()) {
-            std::cout << "No tasks available.\n";
+            std::cout << "-=-=-=- You have no tasks! -=-=-=-\n";
         }
+        std::cout << "-=-=-=- Your Tasks -=-=-=-\n";
         for (const auto& [id, t] : id_task) {
             std::cout << "ID: " << id << ", Title: " << t.title 
                       << ", Completed: " << (t.completed ? "Yes" : "No") << "\n";
         }
+        std::cout << "-=-=-=- End of Tasks -=-=-=-\n";
     }
     void add_task(std::string title, bool completed = false){
         task new_task;
