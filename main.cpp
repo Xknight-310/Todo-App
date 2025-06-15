@@ -3,6 +3,7 @@
 #include "src/task.h"
 #include <vector>
 #include <algorithm>
+#include <optional>
 
 std::vector<std::string> all_quit_statements = {"exit", "Exit", "EXIT", "quit", "Quit", "QUIT", "q", "Q", "close", "Close", "CLOSE", "e", "E", "stop", "Stop", "STOP"};
 int main(){
@@ -12,10 +13,12 @@ int main(){
     while (true) {
         std::cout << "-=-=-=- Commands -=-=-=-\n"
                   << "1: Add task \n"
-                  << "2: Quit \n";
+                  << "2: Update task \n"
+                  << "3: Remove task \n"
+                  << "4: Quit \n";
         std::string command;
         std::getline(std::cin, command);
-        if (std::find(all_quit_statements.begin(), all_quit_statements.end(), command) != all_quit_statements.end() || command == "2") {
+        if (std::find(all_quit_statements.begin(), all_quit_statements.end(), command) != all_quit_statements.end() || command == "4") {
             break;
         } 
         if (command == "1") {
@@ -28,6 +31,53 @@ int main(){
             }
             myTasks.add_task(title);
             std::cout << "Task added\n";
+        } else if (command == "2"){
+            std::cout << "-=-=-=- 2: Update task -=-=-=-\n"
+                      << "Give id from tasks that you want to update \n";
+            int id;
+            std::string id_str;
+            std::getline(std::cin, id_str);
+            id = std::stoi(id_str);
+            std::optional<task> updating_task = myTasks.get_task(id);
+            if (updating_task.has_value()){
+                std::cout << "Choose an options:\n"
+                        << "1: Change title \n"
+                        << "2: Complete task \n"
+                        << "3: Quit program \n";
+                std::string update_task_command;
+                std::getline(std::cin, update_task_command);
+            
+                if (std::find(all_quit_statements.begin(), all_quit_statements.end(), update_task_command) != all_quit_statements.end() || update_task_command == "3") {
+                    break;
+                }
+                if (update_task_command == "1"){
+                    std::string new_title;
+                    std::cout << "New title: ";
+                    std::getline(std::cin, new_title);
+                    myTasks.update_task(id , new_title);
+                    std::cout << "Task " << myTasks.get_task(id)->title << " is now completed.\n";
+                } else if (update_task_command == "2"){
+                    myTasks.update_task(id , std::nullopt, true);
+                    std::cout << "Task " << myTasks.get_task(id)->title << " is now completed.\n";
+                }
+            }else {
+                //Not an option
+            } 
+        } else if (command == "3"){
+            std::cout << "-=-=-=- 3: Remove task -=-=-=-\n"
+                      << "Give id from tasks that you want to remove \n";
+            int id;
+            std::string id_str;
+            std::getline(std::cin, id_str);
+            id = std::stoi(id_str);
+            std::optional<task> updating_task = myTasks.get_task(id);
+            if (updating_task.has_value()){
+                std::string title = myTasks.get_task(id)->title;
+                myTasks.delete_task(id );
+                std::cout << "Task " << title << " is now deleted.\n";
+            } else {
+                std::cout << "Task with that id doesn't exist\n";
+            }
         } else {
             std::cout << "That is not an option.\n";
         }

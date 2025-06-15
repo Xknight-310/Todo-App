@@ -2,6 +2,8 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include <optional>
+
 struct task{
     int id;
     std::string title;
@@ -14,6 +16,7 @@ private:
     void load_tasks(){
         // This function would typically load tasks from a file or database.
         // For this example, we will load it from tasks.txt.
+        id_task.clear();
         std::ifstream Readfile("tasks.txt");
         if (!Readfile.is_open()) {
             std::cerr << "Error opening tasks.txt\n";
@@ -33,7 +36,6 @@ private:
             }
         }
         Readfile.close();
-        std::cout << "Tasks loaded successfully.\n";
     }
 
     void save_tasks(){
@@ -44,11 +46,12 @@ private:
             std::cerr << "Error opening tasks.txt for writing\n";
             return;
         }
+        int i = 1;
         for (const auto& [id, t] : id_task) {
-            Writefile << id << "," << t.title << "," << (t.completed ? "true" : "false") << "\n";
+            Writefile << i << "," << t.title << "," << (t.completed ? "true" : "false") << "\n";
+            i++;
         }
         Writefile.close();
-        std::cout << "Tasks saved successfully.\n";
     }
 public:
     
@@ -57,16 +60,19 @@ public:
     }
 
     void get_all_task(){
+        load_tasks();
         if (id_task.empty()) {
             std::cout << "-=-=-=- You have no tasks! -=-=-=-\n";
+        } else {
+            std::cout << "-=-=-=- Your Tasks -=-=-=-\n";
+            for (const auto& [id, t] : id_task) {
+                std::cout << "ID: " << id << ", Title: " << t.title 
+                        << ", Completed: " << (t.completed ? "Yes" : "No") << "\n";
+            }
+            std::cout << "-=-=-=- End of Tasks -=-=-=-\n";
         }
-        std::cout << "-=-=-=- Your Tasks -=-=-=-\n";
-        for (const auto& [id, t] : id_task) {
-            std::cout << "ID: " << id << ", Title: " << t.title 
-                      << ", Completed: " << (t.completed ? "Yes" : "No") << "\n";
-        }
-        std::cout << "-=-=-=- End of Tasks -=-=-=-\n";
     }
+
     void add_task(std::string title, bool completed = false){
         task new_task;
         int id = id_task.size() + 1; // Generate a new id based on the current size
@@ -76,5 +82,36 @@ public:
         id_task[id] = new_task;
         save_tasks();
     }
-};
 
+    std::optional<task> get_task(int id){
+        load_tasks();
+        if (id_task.find(id) == id_task.end()) {
+            std::cerr << "Task with ID " << id << " does not exist.\n";
+            return std::nullopt; // Return an empty task
+        }
+        return id_task[id];
+    }
+
+    void update_task(int id, std::optional<std::string> title = std::nullopt, std::optional<bool> completed = std::nullopt){
+        if (id_task.find(id) == id_task.end()) {
+            std::cout << "Task with ID " << id << " does not exist.\n";
+        }
+        if (title.has_value()) {
+            id_task[id].title = title.value();
+        }
+        if (completed.has_value()) {
+            id_task[id].completed = completed.value();
+        }
+        save_tasks();
+
+    }
+
+    void delete_task(int id){
+        if (id_task.find(id) == id_task.end()) {
+            std::cout << "Task with ID " << id << " does not exist.\n";
+            return;
+        }
+        id_task.erase(id);
+        save_tasks();
+    }
+};
