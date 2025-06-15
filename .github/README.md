@@ -9,4 +9,4 @@ Please follow the [issue templates](ISSUE_TEMPLATE/), so I can fix it as fast as
 ## Author
 **Xknight-310**
 ## License
-[MIT License](LICENSE/LICENSE)
+[MIT License](../LICESE)
