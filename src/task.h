@@ -16,6 +16,7 @@ private:
     void load_tasks(){
         // This function would typically load tasks from a file or database.
         // For this example, we will load it from tasks.txt.
+        id_task.clear();
         std::ifstream Readfile("tasks.txt");
         if (!Readfile.is_open()) {
             std::cerr << "Error opening tasks.txt\n";
@@ -35,7 +36,6 @@ private:
             }
         }
         Readfile.close();
-        std::cout << "Tasks loaded successfully.\n";
     }
 
     void save_tasks(){
@@ -46,11 +46,12 @@ private:
             std::cerr << "Error opening tasks.txt for writing\n";
             return;
         }
+        int i = 1;
         for (const auto& [id, t] : id_task) {
-            Writefile << id << "," << t.title << "," << (t.completed ? "true" : "false") << "\n";
+            Writefile << i << "," << t.title << "," << (t.completed ? "true" : "false") << "\n";
+            i++;
         }
         Writefile.close();
-        std::cout << "Tasks saved successfully.\n";
     }
 public:
     
@@ -59,15 +60,17 @@ public:
     }
 
     void get_all_task(){
+        load_tasks();
         if (id_task.empty()) {
             std::cout << "-=-=-=- You have no tasks! -=-=-=-\n";
+        } else {
+            std::cout << "-=-=-=- Your Tasks -=-=-=-\n";
+            for (const auto& [id, t] : id_task) {
+                std::cout << "ID: " << id << ", Title: " << t.title 
+                        << ", Completed: " << (t.completed ? "Yes" : "No") << "\n";
+            }
+            std::cout << "-=-=-=- End of Tasks -=-=-=-\n";
         }
-        std::cout << "-=-=-=- Your Tasks -=-=-=-\n";
-        for (const auto& [id, t] : id_task) {
-            std::cout << "ID: " << id << ", Title: " << t.title 
-                      << ", Completed: " << (t.completed ? "Yes" : "No") << "\n";
-        }
-        std::cout << "-=-=-=- End of Tasks -=-=-=-\n";
     }
 
     void add_task(std::string title, bool completed = false){
@@ -81,6 +84,7 @@ public:
     }
 
     std::optional<task> get_task(int id){
+        load_tasks();
         if (id_task.find(id) == id_task.end()) {
             std::cerr << "Task with ID " << id << " does not exist.\n";
             return std::nullopt; // Return an empty task
