@@ -2,6 +2,7 @@
 This is a **c++** based Todo App.\
 You can add your own tasks and they will be stored in *tasks.txt*
 ## Next steps (work in progress)
+* Adding labels to tasks (e.g. ugent, important) and then order the tasks from urent to less urgent
 * Making an gui for this app. (May take a while, because I have never done that before any tips/tricks may be left in the issue's with the corresponding tag.)
 ## Features
 **Add task:**  You can add your own tasks.\
