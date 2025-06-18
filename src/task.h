@@ -4,6 +4,19 @@
 #include <fstream>
 #include <optional>
 
+class Label{
+    // their are three types of labels:
+    // 1. important
+    // 2. urgent
+    // 3. normal
+    public:
+    enum class Type {
+        Important,
+        Urgent,
+        Normal
+    };
+};
+
 struct task{
     int id;
     std::string title;
