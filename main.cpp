@@ -42,12 +42,13 @@ int main(){
             if (updating_task.has_value()){
                 std::cout << "Choose an options:\n"
                         << "1: Change title \n"
-                        << "2: Complete task \n"
-                        << "3: Quit program \n";
+                        << "2: Change label \n"
+                        << "3: Complete task \n"
+                        << "4: Quit program \n";
                 std::string update_task_command;
                 std::getline(std::cin, update_task_command);
             
-                if (std::find(all_quit_statements.begin(), all_quit_statements.end(), update_task_command) != all_quit_statements.end() || update_task_command == "3") {
+                if (std::find(all_quit_statements.begin(), all_quit_statements.end(), update_task_command) != all_quit_statements.end() || update_task_command == "4") {
                     break;
                 }
                 if (update_task_command == "1"){
@@ -57,7 +58,14 @@ int main(){
                     myTasks.update_task(id , new_title);
                     std::cout << "Task " << myTasks.get_task(id)->title << " is now completed.\n";
                 } else if (update_task_command == "2"){
-                    myTasks.update_task(id , std::nullopt, true);
+                    std::string new_label_str;
+                    std::cout << "New label(urgent, important, normal): ";
+                    std::getline(std::cin, new_label_str);
+                    Label new_label = (new_label_str == "urgent") ? Label::Urgent : (new_label_str == "important") ? Label::Important : Label::Normal;
+                    myTasks.update_task(id , std::nullopt, new_label);
+                    std::cout << "Task " << myTasks.get_task(id)->title << " has changed it's label to " << ((myTasks.get_task(id) ->label  == Label::Urgent) ? "urgent" : (myTasks.get_task(id) ->label == Label::Important) ? "important" : (myTasks.get_task(id) ->label == Label::Normal) ? "normal" : "you have changed your label to somthing that wasn't an option so it's changed to normal") << "\n";
+                } else if (update_task_command == "3"){
+                    myTasks.update_task(id , std::nullopt, std::nullopt, true);
                     std::cout << "Task " << myTasks.get_task(id)->title << " is now completed.\n";
                 }
             }else {
@@ -78,7 +86,7 @@ int main(){
             } else {
                 std::cout << "Task with that id doesn't exist\n";
             }
-        } else {
+        } else  {
             std::cout << "That is not an option.\n";
         }
         
